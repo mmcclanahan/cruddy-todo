@@ -64,13 +64,27 @@ exports.readAll = (callback) => {
 //read a todo item from the data directory based on the id
 //read the contents of the todo item file
 //give the contents to the client
+
+//get filepath via path.join (see above)
+//fs.readfile method (filepath, (err, text) )
+
 exports.readOne = (id, callback) => {
+  const filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(filePath, 'utf8', (err, text) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, {'id': id, 'text': text});
+    }
+  });
+  /*
   var text = items[id];
   if (!text) {
     callback(new Error(`No item with id: ${id}`));
   } else {
     callback(null, { id, text });
   }
+  */
 };
 //
 exports.update = (id, text, callback) => {
