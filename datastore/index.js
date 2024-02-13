@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+//var Promise = require('bluebird');
+
 
 var items = {};
 
@@ -37,23 +39,41 @@ exports.create = (text, callback) => {
   });
 };
 //the data directory holds files each filename is the value === ##### and inside the file is a string text
-
 //read our data folder, build list of files: storing files in array
 //create list = [];
 //DO NOT READ File contents
 //
+//promisifing readall
+//
+// within our map iteration, fs.readFile for each file
+// Use Promise.all to have an array with promises from each file
+//[readDir, readFile] when completes -> [id, inside text]
+
+//when using Promise.promisfy() paramater must be just the function / not including its expected parameters
+//var readit = Promise.promisify(fs.readFile); // now can use readit with expected arguments
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, files) => {
     //if statement to callback err
     if (err) {
       callback(err);
     }
-    var fileList = files.map((currentFileName) => {
-      //variable here to append .txt to files
+    var PromiseForEachFileList = files.map((currentFileName) => {
+      // get filepath for each file
+      var filePath = path.join(exports.dataDir, currentFileName);
+      // make readfile a promise to then assert values of keys in file
       var realId = currentFileName.slice(0, currentFileName.length - 4);
-      return {'id': realId, 'text': realId};
+      //fs.promise returns Promise objects rather than using cbs
+      //fs.promises.readfile
+      return fs.promises.readFile(filePath, 'utf8')
+        .then(text => (
+          {'id': realId, 'text': text}
+        ));
     });
-    callback(null, fileList);
+    Promise.all(PromiseForEachFileList)
+      .then((values) => callback(null, values))
+      .catch((errors) => callback(errors));
+
+    //callback(null, fileList);
   });
 
   // var data = _.map(items, (text, id) => {
