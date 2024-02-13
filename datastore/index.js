@@ -19,7 +19,7 @@ exports.create = (text, callback) => {
     if (err) {
       callback(err);
     }
-    var filePath = path.join(exports.dataDir, `${value}.txt` );
+    var filePath = path.join(exports.dataDir, `${value}.txt`);
     fs.writeFile(filePath, text, (err) => {
       //if
       if (err) {
@@ -35,12 +35,36 @@ exports.create = (text, callback) => {
   // callback(null, { id, text });
   });
 };
+//the data directory holds files each filename is the value === ##### and inside the file is a string text
 
+//read our data folder, build list of files: storing files in array
+//create list = [];
+//DO NOT READ File contents
+//
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  fs.readdir(exports.dataDir, (err, files) => {
+    //if statement to callback err
+    if (err) {
+      callback(err);
+    }
+    /* want to output list {id: id, }
+    file.map(currentFileName) => {
+
+    }
+*/
+    var fileList = files.map((currentFileName) => {
+      //variable here to append .txt to files
+      var realId = currentFileName.slice(0, currentFileName.length - 4);
+      return {'id': realId, 'text': realId};
+    });
+    callback(null, fileList);
   });
-  callback(null, data);
+
+  // var data = _.map(items, (text, id) => {
+  //   return { id, text };
+  // });
+  // callback(null, data);
+
 };
 
 exports.readOne = (id, callback) => {
