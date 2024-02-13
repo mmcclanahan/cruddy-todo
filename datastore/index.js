@@ -7,10 +7,33 @@ var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
+
+//fill in parameters for getNextUniqueID
+//use uniqueID to create file
+//fs.writeFile function params: filepath, data, callback
+//filepath: exports.dataDir, data: .txt
+//path.join(exports.dataDir, id)           filename === id  inside === data
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  counter.getNextUniqueId((err, value) => {
+    //if there is an error, we pass it into the callback to make value 0
+    if (err) {
+      callback(err);
+    }
+    var filePath = path.join(exports.dataDir, `${value}.txt` );
+    fs.writeFile(filePath, text, (err) => {
+      //if
+      if (err) {
+        throw ('file not found');
+      } else {
+        //somehow store our value and text data
+        callback(null, {id: value, text: text});
+      }
+    });
+
+  // var id = counter.getNextUniqueId();
+  // items[id] = text;
+  // callback(null, { id, text });
+  });
 };
 
 exports.readAll = (callback) => {
