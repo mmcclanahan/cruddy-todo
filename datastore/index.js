@@ -47,11 +47,6 @@ exports.readAll = (callback) => {
     if (err) {
       callback(err);
     }
-    /* want to output list {id: id, }
-    file.map(currentFileName) => {
-
-    }
-*/
     var fileList = files.map((currentFileName) => {
       //variable here to append .txt to files
       var realId = currentFileName.slice(0, currentFileName.length - 4);
@@ -66,7 +61,9 @@ exports.readAll = (callback) => {
   // callback(null, data);
 
 };
-
+//read a todo item from the data directory based on the id
+//read the contents of the todo item file
+//give the contents to the client
 exports.readOne = (id, callback) => {
   var text = items[id];
   if (!text) {
@@ -75,7 +72,7 @@ exports.readOne = (id, callback) => {
     callback(null, { id, text });
   }
 };
-
+//
 exports.update = (id, text, callback) => {
   var item = items[id];
   if (!item) {
