@@ -98,15 +98,15 @@ exports.update = (id, text, callback) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       callback(err);
+    } else {
+      fs.writeFile(filePath, text, 'utf8', (err) => {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {'id': id, 'text': text});
+        }
+      });
     }
-    fs.writeFile(filePath, text, 'utf8', (err) => {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, {'id': id, 'text': text});
-      }
-
-    });
   });
 
   /*
@@ -119,8 +119,19 @@ exports.update = (id, text, callback) => {
   }
   */
 };
-
+// make filePath
+//fs.rm(path, callback for error)
 exports.delete = (id, callback) => {
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.rm(filePath, (err) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null);
+    }
+  });
+
+  /*
   var item = items[id];
   delete items[id];
   if (!item) {
@@ -129,6 +140,7 @@ exports.delete = (id, callback) => {
   } else {
     callback();
   }
+  */
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
