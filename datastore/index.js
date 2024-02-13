@@ -13,6 +13,7 @@ var items = {};
 //fs.writeFile function params: filepath, data, callback
 //filepath: exports.dataDir, data: .txt
 //path.join(exports.dataDir, id)           filename === id  inside === data
+//testmessage
 exports.create = (text, callback) => {
   counter.getNextUniqueId((err, value) => {
     //if there is an error, we pass it into the callback to make value 0
