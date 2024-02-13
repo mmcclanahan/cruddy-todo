@@ -86,8 +86,30 @@ exports.readOne = (id, callback) => {
   }
   */
 };
-//
+
+//set up path
+//fs.readfile (only to callback(errors) if file dne)
+//if error, catch err with callback
+//else, fs.writefile, somehow take in user input
+
+
 exports.update = (id, text, callback) => {
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      callback(err);
+    }
+    fs.writeFile(filePath, text, 'utf8', (err) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, {'id': id, 'text': text});
+      }
+
+    });
+  });
+
+  /*
   var item = items[id];
   if (!item) {
     callback(new Error(`No item with id: ${id}`));
@@ -95,6 +117,7 @@ exports.update = (id, text, callback) => {
     items[id] = text;
     callback(null, { id, text });
   }
+  */
 };
 
 exports.delete = (id, callback) => {
