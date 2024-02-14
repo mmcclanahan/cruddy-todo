@@ -13,6 +13,7 @@ var items = {};
 //fs.writeFile function params: filepath, data, callback
 //filepath: exports.dataDir, data: .txt
 //path.join(exports.dataDir, id)           filename === id  inside === data
+//testmessage
 exports.create = (text, callback) => {
   counter.getNextUniqueId((err, value) => {
     //if there is an error, we pass it into the callback to make value 0
@@ -64,16 +65,52 @@ exports.readAll = (callback) => {
 //read a todo item from the data directory based on the id
 //read the contents of the todo item file
 //give the contents to the client
+
+//get filepath via path.join (see above)
+//fs.readfile method (filepath, (err, text) )
+
 exports.readOne = (id, callback) => {
+  const filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(filePath, 'utf8', (err, text) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, {'id': id, 'text': text});
+    }
+  });
+  /*
   var text = items[id];
   if (!text) {
     callback(new Error(`No item with id: ${id}`));
   } else {
     callback(null, { id, text });
   }
+  */
 };
-//
+
+//set up path
+//fs.readfile (only to callback(errors) if file dne)
+//if error, catch err with callback
+//else, fs.writefile, somehow take in user input
+
+
 exports.update = (id, text, callback) => {
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      callback(err);
+    } else {
+      fs.writeFile(filePath, text, 'utf8', (err) => {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {'id': id, 'text': text});
+        }
+      });
+    }
+  });
+
+  /*
   var item = items[id];
   if (!item) {
     callback(new Error(`No item with id: ${id}`));
@@ -81,9 +118,21 @@ exports.update = (id, text, callback) => {
     items[id] = text;
     callback(null, { id, text });
   }
+  */
 };
-
+// make filePath
+//fs.rm(path, callback for error)
 exports.delete = (id, callback) => {
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.rm(filePath, (err) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null);
+    }
+  });
+
+  /*
   var item = items[id];
   delete items[id];
   if (!item) {
@@ -92,6 +141,7 @@ exports.delete = (id, callback) => {
   } else {
     callback();
   }
+  */
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
